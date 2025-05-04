@@ -1,11 +1,11 @@
-# 高雄 YouBike 站點搜尋
+# YouBike 站點搜尋
 **一個簡單的YouBike站點搜尋器**
 
 ---
 
 **簡介**
 
-此專案為一個簡單的網頁應用程式，提供使用者可以搜尋高雄市的 YouBike 站點資訊，並查看各站點的車輛狀況。
+此專案為一個簡單的網頁應用程式，提供使用者可以搜尋全國的 YouBike 站點資訊，並查看各站點的車輛狀況。
 
 使用者可以透過輸入站點名稱或定位，快速查詢 YouBike 2.0 站點的資訊，包括：
 * 站點名稱
@@ -21,13 +21,16 @@
 * Google 地圖跳轉
 * PWA 應用程式安裝
 * 定位開關
-* 黑暗模式
 * 自動定時更新
+* 黑暗模式
+* 離線模式
+
+**離線模式提供定位功能，但需要在PWA應用中開啟。離線模式僅提供附近站點，不會顯示車子數量**
 
 ## 使用方式
 
-1. 請前往 [potatosserver.github.io/YouBike](https://potatosserver.github.io/YouBike/) 即可使用本服務。
-2.在搜尋框輸入關鍵字查詢
+1. 請前往 [potatosserver.github.io/YouBike](https://potatosserver.github.io/YouBike/) 或是從[Releases](https://github.com/potatosserver/YouBike/releases)下載APK安裝至Android手機即可使用本服務。
+2. 在搜尋框輸入關鍵字查詢
 3. 可開啟定位啟用最近站點與距離計算。
 4. 點擊卡片可開啟站點的Google地圖。
 5. 可使用卡片右上角的星星釘選車站
@@ -37,18 +40,16 @@
 
 1. PWA(Progressive Web App)是指一種網頁應用程式的設計理念，旨在提供類似原生應用程式的使用體驗。PWA可以在各種設備上運行，包括桌面和移動設備，並且可以離線使用。PWA的特點包括快速加載、可靠性和可安裝性。PWA的目標是讓網頁應用程式像原生應用程式一樣流暢和易於使用。
 2. 建議使用Chrome、Microsoft Edge 等瀏覽器，其他瀏覽器對於PWA的支援較差，可能會導致安裝失敗或無法正常運行。
-3. 目前僅支援高雄市的YouBike站點資訊，未來可能會擴展到其他城市的YouBike資訊。
+3. 目前新版本支援全國的YouBike站點資訊，但在未開啟定位的情況下會以高雄捷運美麗島站為中心定位。
 
 ## 資料來源
 
-- [資料來自高雄市資料開放平台API](https://api.kcg.gov.tw/ServiceList/Detail/b4dd9c40-9027-4125-8666-06bef1756092)
 -  [YouBike 官網](https://www.youbike.com.tw)
 
 ## 版權與聲明
 
-本專案皆可自由共享與修改。  
-本專案不可用於盈利。  
-本工具不屬於高雄市政府及 YouBike 公司
+本專案皆可自由共享與修改，但不可用於盈利目的。  
+本工具不屬於 YouBike 微笑單車股份有限公司
 
 ## 已知錯誤
 
@@ -61,7 +62,7 @@
 ## 貢獻者
 
 * [AndrewCho0531](https://github.com/AndrewCho0531):邏輯編寫、UI設計
-* [KEVIN970712](https://github.com/KEVIN970712):題材發想、錯誤修正
+* [KEVIN970712](https://github.com/KEVIN970712):題材發想、錯誤修正、APK封裝
 
 ## 補充
 
