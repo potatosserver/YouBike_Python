@@ -18,7 +18,7 @@
 
 ## 使用方式
 
-1. 將上方檔案下載至裝置運行即可使用本服務。
+1. 將上方檔案下載至裝置運行或是前往[線上IDE](https://potatosserver.github.io/YouBike_Python/)執行即可使用本服務。
 
 ## 備註
 
