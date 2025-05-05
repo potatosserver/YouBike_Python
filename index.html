@@ -171,19 +171,26 @@ if __name__ == "__main__":
         });
 
         async function loadPyodideAndPackages() {
+            const runBtn = document.getElementById("run-btn");
+            runBtn.disabled = true;
+            runBtn.innerText = "資源下載中";
+            runBtn.style.backgroundColor = "gray";  // 修改背景色為灰色
+            runBtn.style.cursor = "not-allowed";      // 修改滑鼠游標為禁止點擊
             window.pyodide = await loadPyodide();
-            // 使用 micropip 安裝 requests 套件
             await pyodide.loadPackage("micropip");
             let micropip = pyodide.pyimport("micropip");
             await micropip.install("requests");
-
+            
             // 覆寫 input()，改用瀏覽器的 prompt 處理使用者輸入
             await pyodide.runPythonAsync(`
 import builtins
 from js import prompt
 builtins.input = lambda prompt_text="": prompt(prompt_text)
             `);
-            document.getElementById("run-btn").disabled = false;
+            runBtn.disabled = false;
+            runBtn.innerText = "執行 Python";
+            runBtn.style.backgroundColor = "green"; // 還原背景色為綠色
+            runBtn.style.cursor = "pointer";        // 還原滑鼠游標
         }
         loadPyodideAndPackages();
 
