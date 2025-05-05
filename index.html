@@ -48,6 +48,14 @@
             font-family: monospace;
             white-space: pre-wrap;
         }
+        @media (max-width: 600px) {
+            #container {
+                flex-direction: column;
+            }
+            #editor-container, #terminal-container {
+                width: 100%;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
     <!-- CodeMirror JS -->
