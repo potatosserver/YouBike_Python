@@ -129,7 +129,7 @@ def main():
         else:
             raw_data = fetch_youbike_data()
         stations = [extract_station_info(site) for site in raw_data]
-        if len(stations) > 20:
+        if len(stations) > 50:
             print("請縮小範圍")
             return
         station_ids = [station['id'] for station in stations]
