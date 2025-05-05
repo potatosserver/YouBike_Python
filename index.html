@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>在網頁中運行 Python</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
+</head>
+<body>
+    <h1>在網頁中執行 Python 程式碼</h1>
+    <textarea id="python-code" rows="10" cols="50">
+print("Hello from Python!")
+    </textarea>
+    <br>
+    <button onclick="runPython()">執行 Python</button>
+    <pre id="output"></pre>
+    
+    <script>
+        async function loadPyodideAndPackages() {
+            window.pyodide = await loadPyodide();
+        }
+        loadPyodideAndPackages();
+        
+        async function runPython() {
+            const code = document.getElementById("python-code").value;
+            try {
+                const output = await pyodide.runPythonAsync(code);
+                document.getElementById("output").textContent = output;
+            } catch (err) {
+                document.getElementById("output").textContent = err;
+            }
+        }
+    </script>
+</body>
+</html>
