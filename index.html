@@ -57,6 +57,48 @@
                 width: 100%;
             }
         }
+        /* 浮動按鈕樣式 */
+        #pip-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        /* 模態視窗樣式 */
+        #pip-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        #pip-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 5px;
+            position: relative;
+        }
+        #pip-close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
     <!-- CodeMirror JS -->
@@ -162,6 +204,18 @@ if __name__ == "__main__":
         </div>
     </div>
 
+    <!-- 浮動按鈕 -->
+    <button id="pip-button">Install</button>
+
+    <!-- 模態視窗 -->
+    <div id="pip-modal">
+        <div id="pip-modal-content">
+            <span id="pip-close">&times;</span>
+            <input type="text" id="pip-package" placeholder="輸入 pip 套件名稱" style="width: 100%; padding: 8px; margin-top: 20px;">
+            <button id="pip-install" style="width: 100%; padding: 10px; margin-top: 10px; background: #28a745; color: #fff; border: none; border-radius: 3px;">安裝</button>
+        </div>
+    </div>
+
     <script>
         // 初始化 CodeMirror 編輯器並啟用行號
         var editor = CodeMirror.fromTextArea(document.getElementById("python-code"), {
@@ -230,6 +284,32 @@ temp_stdout.getvalue()
                 document.getElementById("terminal").innerHTML = err;
             }
         }
+
+        document.getElementById('pip-button').addEventListener('click', function() {
+            document.getElementById('pip-modal').style.display = 'block';
+        });
+        document.getElementById('pip-close').addEventListener('click', function() {
+            document.getElementById('pip-modal').style.display = 'none';
+        });
+        document.getElementById('pip-install').addEventListener('click', function() {
+            var packageName = document.getElementById('pip-package').value;
+            if (!packageName) { 
+                alert("請輸入 pip 套件名稱"); 
+                return;
+            }
+            document.getElementById('pip-install').innerText = "安裝中...";
+            pyodide.runPythonAsync(`
+import micropip
+await micropip.install("${packageName}")
+`).then(() => {
+    alert(packageName + " 安裝成功");
+}).catch(error => {
+    alert("安裝失敗: " + error);
+}).finally(() => {
+    document.getElementById('pip-install').innerText = "安裝";
+    document.getElementById('pip-modal').style.display = 'none';
+});
+        });
     </script>
 </body>
 </html>
