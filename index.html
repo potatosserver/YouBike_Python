@@ -7,10 +7,19 @@
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
     <style>
+        /* 修改：為 body 加上動態漸變背景的動畫相關設定 */
         body {
-            background: #f4f4f4;
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
             font-family: Arial, sans-serif;
             padding: 20px;
+            transition: background 6s linear; /* 修改：平滑過渡設定，延長至6秒讓漸變更自然 */
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         h1 {
             color: #333;
@@ -26,11 +35,13 @@
             cursor: pointer;
             display: block;
             margin: 10px auto 20px auto;
+            border-radius: 10px; /* 新增：使執行按鈕圓角化 */
         }
         /* 編輯器與終端機橫向排列 */
         #container {
             display: flex;
             gap: 20px;
+            align-items: stretch; /* 新增：使編輯器和終端機底部同高 */
         }
         #editor-container, #terminal-container {
             width: 50%;
@@ -39,6 +50,7 @@
             border: 1px solid #ddd;
             height: 400px;
             font-size: 16px;
+            border-radius: 5px; /* 新增：編輯器圓角化 */
         }
         #terminal {
             background: black;
@@ -48,6 +60,7 @@
             overflow: auto;
             font-family: monospace;
             white-space: pre-wrap;
+            border-radius: 5px; /* 新增：終端機圓角化 */
         }
         @media (max-width: 600px) {
             #container {
@@ -98,6 +111,11 @@
             top: 5px;
             font-size: 20px;
             cursor: pointer;
+        }
+        /* 新增：統一輸入欄位的圓角樣式 */
+        #pip-modal-content input[type="text"] {
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
@@ -284,6 +302,45 @@ temp_stdout.getvalue()
                 document.getElementById("terminal").innerHTML = err;
             }
         }
+
+        // 修改：使用平滑插值改變背景色
+        function randomPastelColorObj() {
+            const r = Math.floor(Math.random() * 56) + 200;
+            const g = Math.floor(Math.random() * 56) + 200;
+            const b = Math.floor(Math.random() * 56) + 200;
+            return { r, g, b };
+        }
+        function rgbString(colorObj) {
+            return `rgb(${colorObj.r}, ${colorObj.g}, ${colorObj.b})`;
+        }
+        let currentColors = [randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj()];
+        let targetColors = [randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj()];
+        const transitionTime = 6000; // 6秒過渡時間
+        let animStart = null;
+        function animateGradient(timestamp) {
+            if (!animStart) animStart = timestamp;
+            let progress = (timestamp - animStart) / transitionTime;
+            if (progress >= 1) {
+                currentColors = targetColors;
+                targetColors = [randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj()];
+                animStart = timestamp;
+                progress = 0;
+            }
+            const interpColors = currentColors.map((startColor, idx) => {
+                const endColor = targetColors[idx];
+                return {
+                    r: Math.round(startColor.r + (endColor.r - startColor.r) * progress),
+                    g: Math.round(startColor.g + (endColor.g - startColor.g) * progress),
+                    b: Math.round(startColor.b + (endColor.b - startColor.b) * progress)
+                };
+            });
+            document.body.style.background = `linear-gradient(135deg, ${rgbString(interpColors[0])}, ${rgbString(interpColors[1])}, ${rgbString(interpColors[2])}, ${rgbString(interpColors[3])})`;
+            requestAnimationFrame(animateGradient);
+        }
+        // 啟動背景動畫
+        window.addEventListener('load', () => {
+            requestAnimationFrame(animateGradient);
+        });
 
         document.getElementById('pip-button').addEventListener('click', function() {
             document.getElementById('pip-modal').style.display = 'block';
