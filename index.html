@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 新增此行以適用行動裝置 -->
     <title>YouBike 爬蟲測試</title>
-    <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
     <style>
-        /* 修改：設定與動畫初始值相近的預設背景，避免載入時突然變色 */
         body {
             background-size: 400% 400%;
-            /* 預設漸層背景，色調與稍後插值漸變的初始值相仿 */
             background: linear-gradient(135deg, #d2d2d2, #dcdcdc, #e6e6e6, #f0f0f0);
             font-family: Arial, sans-serif;
             padding: 20px;
-            transition: background 6s linear; /* 修改：平滑過渡設定，延長至6秒讓漸變更自然 */
+            transition: background 6s linear;
         }
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
@@ -25,7 +22,6 @@
             color: #333;
             text-align: center;
         }
-        /* 綠色的執行鈕置中於上方 */
         #run-btn {
             background-color: green;
             color: white;
@@ -35,13 +31,12 @@
             cursor: pointer;
             display: block;
             margin: 10px auto 20px auto;
-            border-radius: 10px; /* 新增：使執行按鈕圓角化 */
+            border-radius: 10px;
         }
-        /* 編輯器與終端機橫向排列 */
         #container {
             display: flex;
             gap: 20px;
-            align-items: stretch; /* 新增：使編輯器和終端機底部同高 */
+            align-items: stretch;
         }
         #editor-container, #terminal-container {
             width: 50%;
@@ -50,7 +45,7 @@
             border: 1px solid #ddd;
             height: 400px;
             font-size: 16px;
-            border-radius: 5px; /* 新增：編輯器圓角化 */
+            border-radius: 5px;
         }
         #terminal {
             background: black;
@@ -60,7 +55,7 @@
             overflow: auto;
             font-family: monospace;
             white-space: pre-wrap;
-            border-radius: 5px; /* 新增：終端機圓角化 */
+            border-radius: 5px;
         }
         @media (max-width: 600px) {
             #container {
@@ -70,7 +65,6 @@
                 width: 100%;
             }
         }
-        /* 浮動按鈕樣式 */
         #pip-button {
             position: fixed;
             bottom: 20px;
@@ -84,7 +78,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-        /* 模態視窗樣式 */
         #pip-modal {
             display: none;
             position: fixed;
@@ -112,14 +105,12 @@
             font-size: 20px;
             cursor: pointer;
         }
-        /* 新增：統一輸入欄位的圓角樣式 */
         #pip-modal-content input[type="text"] {
             border-radius: 5px;
             border: 1px solid #ddd;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
-    <!-- CodeMirror JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/python/python.min.js"></script>
 </head>
@@ -224,11 +215,7 @@ if __name__ == "__main__":
             <div id="terminal"></div>
         </div>
     </div>
-
-    <!-- 浮動按鈕 -->
     <button id="pip-button">PIP</button>
-
-    <!-- 模態視窗 -->
     <div id="pip-modal">
         <div id="pip-modal-content">
             <span id="pip-close">&times;</span>
@@ -238,7 +225,6 @@ if __name__ == "__main__":
     </div>
 
     <script>
-        // 初始化 CodeMirror 編輯器並啟用行號
         var editor = CodeMirror.fromTextArea(document.getElementById("python-code"), {
             mode: "python",
             lineNumbers: true,
@@ -249,14 +235,12 @@ if __name__ == "__main__":
             const runBtn = document.getElementById("run-btn");
             runBtn.disabled = true;
             runBtn.innerText = "資源下載中";
-            runBtn.style.backgroundColor = "gray";  // 修改背景色為灰色
-            runBtn.style.cursor = "not-allowed";      // 修改滑鼠游標為禁止點擊
+            runBtn.style.backgroundColor = "gray";
+            runBtn.style.cursor = "not-allowed";
             window.pyodide = await loadPyodide();
             await pyodide.loadPackage("micropip");
             let micropip = pyodide.pyimport("micropip");
             await micropip.install("requests");
-            
-            // 覆寫 input()，改用瀏覽器的 prompt 處理使用者輸入
             await pyodide.runPythonAsync(`
 import builtins
 from js import prompt
@@ -264,16 +248,14 @@ builtins.input = lambda prompt_text="": prompt(prompt_text)
             `);
             runBtn.disabled = false;
             runBtn.innerText = "執行 Python";
-            runBtn.style.backgroundColor = "green"; // 還原背景色為綠色
-            runBtn.style.cursor = "pointer";        // 還原滑鼠游標
+            runBtn.style.backgroundColor = "green";
+            runBtn.style.cursor = "pointer";
         }
         loadPyodideAndPackages();
 
         async function runPython() {
             const code = editor.getValue();
-            // 將每行程式碼縮排，使其可置於 try 區塊中
             const indentedCode = code.split("\n").map(line => "    " + line).join("\n");
-            // 清空終端機區塊
             document.getElementById("terminal").innerHTML = "";
             const wrappedCode = `
 from io import StringIO
@@ -291,22 +273,17 @@ temp_stdout.getvalue()
             try {
                 const output = await pyodide.runPythonAsync(wrappedCode);
                 let formattedOutput = output;
-                // 嘗試解析 JSON 格式，若成功則美化輸出
                 try {
                     const jsonObj = JSON.parse(output);
                     formattedOutput = JSON.stringify(jsonObj, null, 2);
                 } catch (jsonErr) {
-                    // 若非 JSON 格式則原值輸出
                 }
-                // 支持換行顯示，將 \n 替換成 <br>
                 formattedOutput = formattedOutput.replace(/\n/g, '<br>');
                 document.getElementById("terminal").innerHTML = formattedOutput;
             } catch (err) {
                 document.getElementById("terminal").innerHTML = err;
             }
         }
-
-        // 修改：使用平滑插值改變背景色
         function randomPastelColorObj() {
             const r = Math.floor(Math.random() * 56) + 200;
             const g = Math.floor(Math.random() * 56) + 200;
@@ -318,7 +295,7 @@ temp_stdout.getvalue()
         }
         let currentColors = [randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj()];
         let targetColors = [randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj(), randomPastelColorObj()];
-        const transitionTime = 6000; // 6秒過渡時間
+        const transitionTime = 6000;
         let animStart = null;
         function animateGradient(timestamp) {
             if (!animStart) animStart = timestamp;
@@ -340,9 +317,8 @@ temp_stdout.getvalue()
             document.body.style.background = `linear-gradient(135deg, ${rgbString(interpColors[0])}, ${rgbString(interpColors[1])}, ${rgbString(interpColors[2])}, ${rgbString(interpColors[3])})`;
             requestAnimationFrame(animateGradient);
         }
-        // 修改：使用 DOMContentLoaded 事件提升動畫啟動時機
-        document.addEventListener('DOMContentLoaded', () => {
-            // 將背景設成初始值，避免 CSS 預設與動畫不一致
+document.addEventListener('DOMContentLoaded', () => {
+            
             document.body.style.background = `linear-gradient(135deg, ${rgbString(currentColors[0])}, ${rgbString(currentColors[1])}, ${rgbString(currentColors[2])}, ${rgbString(currentColors[3])})`;
             requestAnimationFrame(animateGradient);
         });
