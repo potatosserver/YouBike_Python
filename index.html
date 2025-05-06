@@ -7,11 +7,11 @@
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
     <style>
-        /* 修改：為 body 加上動態漸變背景的動畫相關設定 */
+        /* 修改：設定與動畫初始值相近的預設背景，避免載入時突然變色 */
         body {
             background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+            /* 預設漸層背景，色調與稍後插值漸變的初始值相仿 */
+            background: linear-gradient(135deg, #d2d2d2, #dcdcdc, #e6e6e6, #f0f0f0);
             font-family: Arial, sans-serif;
             padding: 20px;
             transition: background 6s linear; /* 修改：平滑過渡設定，延長至6秒讓漸變更自然 */
@@ -337,8 +337,10 @@ temp_stdout.getvalue()
             document.body.style.background = `linear-gradient(135deg, ${rgbString(interpColors[0])}, ${rgbString(interpColors[1])}, ${rgbString(interpColors[2])}, ${rgbString(interpColors[3])})`;
             requestAnimationFrame(animateGradient);
         }
-        // 啟動背景動畫
-        window.addEventListener('load', () => {
+        // 修改：使用 DOMContentLoaded 事件提升動畫啟動時機
+        document.addEventListener('DOMContentLoaded', () => {
+            // 將背景設成初始值，避免 CSS 預設與動畫不一致
+            document.body.style.background = `linear-gradient(135deg, ${rgbString(currentColors[0])}, ${rgbString(currentColors[1])}, ${rgbString(currentColors[2])}, ${rgbString(currentColors[3])})`;
             requestAnimationFrame(animateGradient);
         });
 
