@@ -59,11 +59,14 @@ def main():
         else:
             raw_data = fetch_youbike_data()
         stations = [extract_station_info(site) for site in raw_data]
-        if len(stations) > 20:
-            print("請縮小範圍")
-            return
+        if len(stations) > 100:
+            print("站點超過100個，僅顯示前100個")
+            stations = stations[:100]
         station_ids = [station['id'] for station in stations]
-        vehicle_data = query_vehicle_data(station_ids)
+        vehicle_data = {}
+        for i in range(0, len(station_ids), 20):
+            batch_ids = station_ids[i:i+20]
+            vehicle_data.update(query_vehicle_data(batch_ids))
         found = False
         for station in stations:
             veh_data = vehicle_data.get(station['id'], {})
