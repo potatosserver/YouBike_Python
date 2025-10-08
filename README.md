@@ -22,7 +22,7 @@
 
 ## 備註
 
-1. 目前新版本支援全國的YouBike站點資訊
+[詳細說明文件](https://github.com/potatosserver/YouBike_Python/blob/main/new_readme.md)
 
 ## 資料來源
 
