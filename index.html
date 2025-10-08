@@ -12,6 +12,9 @@
             font-family: Arial, sans-serif;
             padding: 20px;
             transition: background 6s linear;
+            margin: 0; /* 移除預設邊距 */
+            min-height: 100vh; /* 確保 body 至少和視窗一樣高，修復漸層斷層 */
+            box-sizing: border-box; /* 讓 padding 不會增加 body 的總高度 */
         }
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
